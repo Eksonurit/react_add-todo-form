@@ -48,8 +48,10 @@ export const App = () => {
       return;
     }
 
+    const nextId = (todos.length ? Math.max(...todos.map(t => t.id)) : 0) + 1;
+
     const newsTodo: Todo = {
-      id: todos.length + 1,
+      id: nextId,
       title: todoTitle,
       completed: false,
       userId: selectedUser,
@@ -70,7 +72,11 @@ export const App = () => {
     <div className="App">
       <h1>Add todo form</h1>
 
-      <form action="/api/todos" method="POST" onSubmit={handleSubmit}>
+      <form
+        action="/api/todos"
+        method="POST"
+        onSubmit={submitEvent => handleSubmit(submitEvent)}
+      >
         <div className="field">
           Title:&nbsp;
           <input
@@ -78,7 +84,9 @@ export const App = () => {
             data-cy="titleInput"
             value={todoTitle}
             placeholder={'Enter a title'}
-            onChange={e => setTodoTitle(e.target.value)}
+            onChange={titleChangeEvent =>
+              setTodoTitle(titleChangeEvent.target.value)
+            }
           />
           {hasTitleError && <span className="error">Please enter a title</span>}
         </div>
@@ -89,8 +97,12 @@ export const App = () => {
             data-cy="userSelect"
             // Встановлюємо значення для select. Якщо selectedUser null, то порожній рядок.
             value={selectedUser !== null ? String(selectedUser) : ''}
-            onChange={e =>
-              setSelectedUser(e.target.value ? +e.target.value : null)
+            onChange={userChangeEvent =>
+              setSelectedUser(
+                userChangeEvent.target.value
+                  ? +userChangeEvent.target.value
+                  : null,
+              )
             }
           >
             {/* value порожній рядок, щоб він не збігався з ID */}
